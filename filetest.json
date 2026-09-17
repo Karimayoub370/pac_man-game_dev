@@ -1,3 +1,6 @@
+# Pac-Man Game Configuration
+# Comments starting with '#' must be stripped before JSON decoding
+
 {
   "highscore_filename": "highscores.json",
   "lives": 3,

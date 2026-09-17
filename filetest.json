@@ -1,10 +1,9 @@
-# Pac-Man Game Configuration
-# Comments starting with '#' must be stripped before JSON decoding
 
 {
   "highscore_filename": "highscores.json",
-  "lives": 3,
+  "lives": 58,
   "seed": 42,
+
   "level_max_time": 90,
   "points_per_pacgum": 10,
   "points_per_super_pacgum": 50,

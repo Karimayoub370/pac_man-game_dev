@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 import sys
 
 
@@ -38,25 +38,53 @@ def strip_comments_from_line(line: str) -> str:
     return line
 
 
-def load_game_data(file_path: Union[str, Path] = "filetest.json") -> GameData:
+def load_game_data(file_path) -> GameData:
     """Parse and validate a JSON configuration file into a GameData model,
     stripping comments starting with '#' before JSON decoding.
     """
+    res = {
+    "highscore_filename": "highscores.json",
+    "lives": 3,
+    "seed": 42,
+    "level_max_time": 90,
+    "points_per_pacgum": 10,
+    "points_per_super_pacgum": 50,
+    "points_per_ghost": 200,
+    "levels": [
+        {
+            "level_id": 1,
+            "width": 21,
+            "height": 21,
+            "pacgum": 42
+        },
+        {
+            "level_id": 2,
+            "width": 25,
+            "height": 25,
+            "pacgum": 60
+        }
+    ]
+}
     path = Path(file_path)
     cleaned_lines = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            stripped = line.strip()
-            if stripped.startswith("#"):
-                continue
-            cleaned_line = strip_comments_from_line(line)
-            cleaned_lines.append(cleaned_line)
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped.startswith("#"):
+                    continue
+                cleaned_line = strip_comments_from_line(line)
+                cleaned_lines.append(cleaned_line)
+        json_content = "".join(cleaned_lines)
+        GameData.model_validate_json(json_content)
 
-    json_content = "".join(cleaned_lines)
-
-    if hasattr(GameData, "model_validate_json"):
-        return GameData.model_validate_json(json_content)
-    return GameData.parse_raw(json_content)
+    except ValidationError as e:
+        print(f"Validation error while parsing '{file_path}': {e}")
+        return GameData.model_validate(res)
+        
+    # if hasattr(GameData, "model_validate_json"):
+    #     return GameData.model_validate_json(json_content)
+    return GameData.model_validate_json(json_content)
 
 
 def main(file_path: Union[str, Path] = "filetest.json") -> GameData:
@@ -79,7 +107,11 @@ def main(file_path: Union[str, Path] = "filetest.json") -> GameData:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        main(sys.argv[1])
-    else:
-        main()
+    try:
+        if len(sys.argv) == 2:
+            main(sys.argv[1])
+        else:
+            main()
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        sys.exit(1)

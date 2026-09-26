@@ -1,8 +1,7 @@
 """Minimal autonomous ghost pursuit prototype."""
 
 from __future__ import annotations
-import math
-
+import os
 # Grid definitions: 1 = Wall, 0 = Corridor
 TEST_MAP: list[list[int]] = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -86,30 +85,67 @@ class Ghost:
 
 def render_scene(grid: list[list[int]], player: tuple[int, int], ghost: tuple[int, int]) -> None:
     """Print the ASCII board to stdout."""
-    symbols = {1: "#", 0: " "}
+    os.system("clear")
+    symbols = {1: "⬛", 0: "⬜"}
+    end = 0
     for r, row in enumerate(grid):
         line = []
         for c, cell in enumerate(row):
+            if (r, c) == player and (r, c) == ghost:
+                line.append("💀")
+                end = 1  # Player and ghost collide
             if (r, c) == player:
-                line.append("P")
+                if not end:
+                    line.append("👨🏿")
+                
             elif (r, c) == ghost:
-                line.append("G")
+                if not end:
+                    line.append("👮‍♂️")
             else:
                 line.append(symbols[cell])
         print("".join(line))
     print("-" * len(grid[0]))
+    if end == 1:
+        print("Game Over! The ghost caught the player.")
+        exit(0)
 
-
+import sys
 if __name__ == "__main__":
     # Setup initial positions
+
     player_position = (3, 4)  # Center of the map
+    print("Initial Board (P = Player, G = Ghost, # = Wall):")
+    direction = input("Enter initial ghost direction (w:UP/s:DOWN/a:LEFT/d:RIGHT): ").strip().lower()
     ghost_entity = Ghost(start_pos=(1, 1))  # Top-left corner
 
-    print("Initial Board (P = Player, G = Ghost, # = Wall):")
+    
     render_scene(TEST_MAP, player_position, ghost_entity.pos)
 
     # Simulate 5 autonomous steps
-    for step_num in range(1, 6):
+    while True:
+        direction = input("Enter initial ghost direction (w:UP/s:DOWN/a:LEFT/d:RIGHT): ").strip().upper()
+        if direction == "Q":
+            sys.exit(0)
+        if direction  == 'W':
+            r, c = DIRECTIONS['UP']
+            if 0 < player_position[0] + r < len(TEST_MAP) and 0 < player_position[1] + c < len(TEST_MAP[0]) and TEST_MAP[player_position[0] + r][player_position[1] + c] == 0:
+                player_position = (player_position[0] + r, player_position[1] + c)
+        elif direction == 'S':
+            r, c = DIRECTIONS['DOWN']
+            if 0 < player_position[0] + r < len(TEST_MAP) and 0 < player_position[1] + c < len(TEST_MAP[0]) and TEST_MAP[player_position[0] + r][player_position[1] + c] == 0:
+                player_position = (player_position[0] + r, player_position[1] + c)
+        elif direction == 'A':
+            r, c = DIRECTIONS['LEFT']
+            if 0 < player_position[0] + r < len(TEST_MAP) and 0 < player_position[1] + c < len(TEST_MAP[0]) and TEST_MAP[player_position[0] + r][player_position[1] + c] == 0:
+                player_position = (player_position[0] + r, player_position[1] + c)
+        elif direction == 'D':
+            r, c = DIRECTIONS['RIGHT']
+            if 0 < player_position[0] + r < len(TEST_MAP) and 0 < player_position[1] + c < len(TEST_MAP[0]) and TEST_MAP[player_position[0] + r][player_position[1] + c] == 0:
+                player_position = (player_position[0] + r, player_position[1] + c)
+        elif direction == '':
+            pass
+        else:
+            continue
+
         ghost_entity.step(target_pos=player_position, grid=TEST_MAP)
-        print(f"Step {step_num} (Ghost moved {ghost_entity.current_direction}):")
         render_scene(TEST_MAP, player_position, ghost_entity.pos)

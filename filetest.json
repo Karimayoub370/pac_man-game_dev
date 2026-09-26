@@ -1,7 +1,7 @@
-
+#input of the game
 {
   "highscore_filename": "highscores.json",
-  "lives": 58,
+  "lives": 58, #lives
   "seed": 42,
 
   "level_max_time": 90,
@@ -10,8 +10,8 @@
   "points_per_ghost": 200,
   "levels": [
     {
-      "level_id": 1,
-      "width": 21,
+      "level_id": 91,
+      "width": 321,
       "height": 21,
       "pacgum": 42
     },

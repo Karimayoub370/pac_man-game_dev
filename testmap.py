@@ -85,7 +85,6 @@ class Ghost:
 
 def render_scene(grid: list[list[int]], player: tuple[int, int], ghost: tuple[int, int]) -> None:
     """Print the ASCII board to stdout."""
-    os.system("clear")
     symbols = {1: "⬛", 0: "⬜"}
     end = 0
     for r, row in enumerate(grid):
@@ -106,24 +105,21 @@ def render_scene(grid: list[list[int]], player: tuple[int, int], ghost: tuple[in
         print("".join(line))
     print("-" * len(grid[0]))
     if end == 1:
-        print("Game Over! The ghost caught the player.")
+        print("Game Over! The cop caught the nigga.")
         exit(0)
 
 import sys
 if __name__ == "__main__":
     # Setup initial positions
-
+    os.system("clear")
     player_position = (3, 4)  # Center of the map
-    print("Initial Board (P = Player, G = Ghost, # = Wall):")
-    direction = input("Enter initial ghost direction (w:UP/s:DOWN/a:LEFT/d:RIGHT): ").strip().lower()
+    print("NIGGGA GAME\n!!NIGGA RUN FROM POLIICE!!")
     ghost_entity = Ghost(start_pos=(1, 1))  # Top-left corner
-
-    
     render_scene(TEST_MAP, player_position, ghost_entity.pos)
 
-    # Simulate 5 autonomous steps
+    # Simulate 5 autonomous steps 
     while True:
-        direction = input("Enter initial ghost direction (w:UP/s:DOWN/a:LEFT/d:RIGHT): ").strip().upper()
+        direction = input("Enter initial ghost direction (w:UP/s:DOWN/a:LEFT/d:RIGHT/q:QUIT): ").strip().upper()
         if direction == "Q":
             sys.exit(0)
         if direction  == 'W':
@@ -148,4 +144,5 @@ if __name__ == "__main__":
             continue
 
         ghost_entity.step(target_pos=player_position, grid=TEST_MAP)
+        os.system("clear")
         render_scene(TEST_MAP, player_position, ghost_entity.pos)

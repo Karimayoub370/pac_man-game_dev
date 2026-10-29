@@ -14,6 +14,7 @@ class Runner():
             raise ParsingError("Must 2 argument")
         parser = Parser(sys.argv[1])
         info_from_file:dict[int:str] = parser.init_parse()
+        parser.keys_parse(info_from_file)
 if __name__=="__main__":
     try:
         run = Runner()

@@ -13,7 +13,7 @@ class Runner():
         if len(sys.argv) != 2:
             raise ParsingError("Must 2 argument")
         parser = Parser(sys.argv[1])
-        parser.parse()
+        info_from_file:dict[int:str] = parser.init_parse()
 if __name__=="__main__":
     try:
         run = Runner()
